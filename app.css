@@ -35,6 +35,7 @@ button {
     font-size: 16px;
     cursor: pointer;
     border-radius: 8px;
+    margin: 3%;
 }
 
 #start {
@@ -43,9 +44,31 @@ button {
     border: none;
 }
 
-#scoreVal {
-    color: #4CAF50;
-}
+#title {
+     font-family: 'Arial', sans-serif;
+     text-align: center;
+     color: #ffffff;
+     position: relative;
+     font-size: 2em;
+     animation: shine 2s infinite;
+ }
+
+ @keyframes shine {
+     0% {
+         color: #ffffff;
+         text-shadow: 0 0 10px #f50b0b, 0 0 20px #ef1a1a, 0 0 30px #f22e2e;
+     }
+
+     50% {
+         color: #3eccf4;
+         text-shadow: 0 0 10px #85dd42, 0 0 20px #68665c, 0 0 30px #62ec72;
+     }
+
+     100% {
+         color: #ffffff;
+         text-shadow: 0 0 10px #15d225, 0 0 20px #1e5fcf, 0 0 30px #0fbf99;
+     }
+ }
 
 .glow-on-hover {
     width: 220px;

@@ -57,11 +57,11 @@ function restartGame() {
     clearBoard();
     startGame();
 
+    startbtn.removeEventListener('click', restartGame);
     startbtn.addEventListener('click', toggleGame);
     document.addEventListener('keydown', moveDirection);
 
     clearInterval(gameInterval);
-    // gameInterval = setInterval(gameLoop, 100); 
     gameLoop();
 }
 
