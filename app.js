@@ -26,6 +26,8 @@ let gameInterval;
 startGame();
 document.addEventListener('keydown', moveDirection);
 startbtn.addEventListener('click', toggleGame);
+document.addEventListener('touchstart', handleTouchStart, false);
+document.addEventListener('touchmove', handleTouchMove, false);
 
 function toggleGame() {
     if (gamePaused) {
@@ -54,14 +56,51 @@ function restartGame() {
     ];
     clearBoard();
     startGame();
-    
+
+    // Reattach event listeners
     startbtn.addEventListener('click', toggleGame);
     document.addEventListener('keydown', moveDirection);
 
+    // Clear existing interval and start a new one with the appropriate speed
     clearInterval(gameInterval);
-    gameLoop();
+    gameInterval = setInterval(gameLoop, 100); // Adjust the interval as needed
 }
 
+function handleTouchStart(event) {
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
+}
+
+function handleTouchMove(event) {
+    if (!gamePaused) {
+        const touchEndX = event.touches[0].clientX;
+        const touchEndY = event.touches[0].clientY;
+
+        const deltaX = touchEndX - touchStartX;
+        const deltaY = touchEndY - touchStartY;
+
+        // Adjust these values based on your preference for sensitivity
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            // Horizontal swipe
+            if (deltaX > 0) {
+                moveDirection({ key: 'ArrowRight' });
+            } else {
+                moveDirection({ key: 'ArrowLeft' });
+            }
+        } else {
+            // Vertical swipe
+            if (deltaY > 0) {
+                moveDirection({ key: 'ArrowDown' });
+            } else {
+                moveDirection({ key: 'ArrowUp' });
+            }
+        }
+
+        // Update touch start coordinates
+        touchStartX = touchEndX;
+        touchStartY = touchEndY;
+    }
+}
 
 function moveDirection(e) {
     if (gamePaused) return;
