@@ -1,4 +1,3 @@
-
 const board = document.getElementById('board');
 const context = board.getContext('2d');
 const scoreVal = document.getElementById('scoreVal');
@@ -14,25 +13,55 @@ let foodY;
 let speedX = 25;
 let speedY = 0;
 
-const snake = [
+let snake = [
     { x: UNIT * 3, y: 0 },
     { x: UNIT * 2, y: 0 },
     { x: UNIT, y: 0 },
     { x: 0, y: 0 }
 ];
 
-let gamePaused = true; // Track game state
+let gamePaused = true;
+let gameInterval;
+
 startGame();
 document.addEventListener('keydown', moveDirection);
 startbtn.addEventListener('click', toggleGame);
 
 function toggleGame() {
-    gamePaused = !gamePaused;
-    if (!gamePaused) {
-        startGame();
-        gameLoop();
+    if (gamePaused) {
+        startbtn.textContent = 'Pause';
+        gamePaused = false;
+        gameInterval = setInterval(gameLoop, 200);
+    } else {
+        startbtn.textContent = 'Start';
+        gamePaused = true;
+        clearInterval(gameInterval);
     }
 }
+
+function restartGame() {
+    startbtn.textContent = 'Start';
+    gamePaused = true;
+    score = 0;
+    scoreVal.textContent = score;
+    speedX = 25;
+    speedY = 0;
+    snake = [
+        { x: UNIT * 3, y: 0 },
+        { x: UNIT * 2, y: 0 },
+        { x: UNIT, y: 0 },
+        { x: 0, y: 0 }
+    ];
+    clearBoard();
+    startGame();
+    
+    startbtn.addEventListener('click', toggleGame);
+    document.addEventListener('keydown', moveDirection);
+
+    clearInterval(gameInterval);
+    gameLoop();
+}
+
 
 function moveDirection(e) {
     if (gamePaused) return;
@@ -94,7 +123,7 @@ function displayFood() {
 function displaySnake() {
     context.fillStyle = 'aqua';
     context.strokeStyle = 'black';
-    snake.forEach((snakePath) => {
+    snake.forEach(snakePath => {
         context.fillRect(snakePath.x, snakePath.y, UNIT, UNIT);
         context.strokeRect(snakePath.x, snakePath.y, UNIT, UNIT);
     });
@@ -114,16 +143,13 @@ function moveSnake() {
 }
 
 function gameLoop() {
-    setTimeout(() => {
-        if (!gamePaused) {
-            clearBoard();
-            displayFood();
-            moveSnake();
-            displaySnake();
-            gameOver();
-            gameLoop();
-        }
-    }, 200);
+    if (!gamePaused) {
+        clearBoard();
+        displayFood();
+        moveSnake();
+        displaySnake();
+        gameOver();
+    }
 }
 
 function gameOver() {
@@ -131,25 +157,30 @@ function gameOver() {
 
     for (let i = 1; i < snake.length; i++) {
         if (head.x === snake[i].x && head.y === snake[i].y) {
-            context.fillStyle = 'white';
-            context.textAlign = 'center';
-            context.font = '60px Serif';
-            context.fillText('Game Over...!!', WIDTH / 2, HEIGHT / 2);
-            gamePaused = true;
-            return; 
+            displayGameOver();
+            clearInterval(gameInterval);
+            return;
         }
     }
-    
+
     switch (true) {
-        case snake[0].x < 0:
-        case snake[0].x >= WIDTH:
-        case snake[0].y < 0:
-        case snake[0].y >= HEIGHT:
-            context.fillStyle = 'white';
-            context.textAlign = 'center';
-            context.font = '60px Serif';
-            context.fillText('Game Over...!!', WIDTH / 2, HEIGHT / 2);
-            gamePaused = true;
+        case head.x < 0:
+        case head.x >= WIDTH:
+        case head.y < 0:
+        case head.y >= HEIGHT:
+            displayGameOver();
+            clearInterval(gameInterval);
             break;
     }
+}
+
+function displayGameOver() {
+    context.fillStyle = 'white';
+    context.textAlign = 'center';
+    context.font = '60px Serif';
+    context.fillText('Game Over...!!', WIDTH / 2, HEIGHT / 2);
+    startbtn.textContent = 'Restart';
+    startbtn.removeEventListener('click', toggleGame);
+    startbtn.addEventListener('click', restartGame);
+    gamePaused = true;
 }
