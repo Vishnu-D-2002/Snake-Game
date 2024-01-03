@@ -57,13 +57,12 @@ function restartGame() {
     clearBoard();
     startGame();
 
-    // Reattach event listeners
     startbtn.addEventListener('click', toggleGame);
     document.addEventListener('keydown', moveDirection);
 
-    // Clear existing interval and start a new one with the appropriate speed
     clearInterval(gameInterval);
-    gameInterval = setInterval(gameLoop, 100); // Adjust the interval as needed
+    gameInterval = setInterval(gameLoop, 100); 
+    gameLoop();
 }
 
 function handleTouchStart(event) {
@@ -79,16 +78,13 @@ function handleTouchMove(event) {
         const deltaX = touchEndX - touchStartX;
         const deltaY = touchEndY - touchStartY;
 
-        // Adjust these values based on your preference for sensitivity
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            // Horizontal swipe
             if (deltaX > 0) {
                 moveDirection({ key: 'ArrowRight' });
             } else {
                 moveDirection({ key: 'ArrowLeft' });
             }
         } else {
-            // Vertical swipe
             if (deltaY > 0) {
                 moveDirection({ key: 'ArrowDown' });
             } else {
@@ -96,7 +92,6 @@ function handleTouchMove(event) {
             }
         }
 
-        // Update touch start coordinates
         touchStartX = touchEndX;
         touchStartY = touchEndY;
     }
