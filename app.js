@@ -61,7 +61,7 @@ function restartGame() {
     document.addEventListener('keydown', moveDirection);
 
     clearInterval(gameInterval);
-    gameInterval = setInterval(gameLoop, 100); 
+    // gameInterval = setInterval(gameLoop, 100); 
     gameLoop();
 }
 
